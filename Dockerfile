@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:19.04
 
 LABEL maintainer="Yevgenii Yolkin <e.v.yolkin@gmail.com>"
 
@@ -9,7 +9,7 @@ ARG WORK_DIR=/app
 RUN userdel -f www-data &&\
     if getent group www-data ; then groupdel www-data; fi &&\
     groupadd -g ${GROUP_ID} www-data &&\
-    useradd -l -u ${USER_ID} -g www-data www-data -s /bin/bash &&\
+    useradd -l -u ${USER_ID} -p www-data -g www-data www-data -s /bin/bash &&\
     install -d -m 0755 -o www-data -g www-data /home/www-data
 
 RUN apt-get update
@@ -42,10 +42,12 @@ RUN apt-get install -y \
 #############
 # install php
 ##############
-ARG PHP_VERSION=7.2
+ARG PHP_VERSION=7.4
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get install software-properties-common
+RUN add-apt-repository ppa:ondrej/php && apt-get update
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       php${PHP_VERSION} \
       php${PHP_VERSION}-curl \
       php${PHP_VERSION}-gd \
@@ -65,6 +67,7 @@ RUN apt-get update \
       php${PHP_VERSION}-imap \
       php${PHP_VERSION}-imagick \
       php${PHP_VERSION}-xdebug \
+      php-xml \
       php-memcached
 
 RUN php -v
