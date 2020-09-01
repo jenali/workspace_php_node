@@ -68,6 +68,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       php${PHP_VERSION}-imagick \
       php${PHP_VERSION}-xdebug \
       php-xml \
+      php-redis \
       php-memcached
 
 RUN php -v
